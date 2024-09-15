@@ -5,16 +5,19 @@ from firebase_admin import credentials, firestore
 import os
 
 # Load Firebase config from environment variable
-firebase_config = os.getenv('FIREBASE_CONFIG')
-if firebase_config is None:
-    raise ValueError("FIREBASE_CONFIG environment variable not set")
+try: 
+    firebase_config = os.getenv('FIREBASE_CONFIG')
+    if firebase_config is None:
+        raise ValueError("FIREBASE_CONFIG environment variable not set")
 
-# Parse the JSON string
-firebase_config_dict = json.loads(firebase_config)
+    # Parse the JSON string
+    firebase_config_dict = json.loads(firebase_config)
 
-# Initialize Firebase
-cred = credentials.Certificate(firebase_config_dict)
-firebase_admin.initialize_app(cred)
+    # Initialize Firebase
+    cred = credentials.Certificate(firebase_config_dict)
+    firebase_admin.initialize_app(cred)
+except Exception as e:
+    pass
 
 #making sure we dont initalize it more than once and error out
 try:
