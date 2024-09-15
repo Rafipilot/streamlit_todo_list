@@ -1,16 +1,45 @@
 import streamlit as st
+import firebase_admin
+from firebase_admin import credentials, firestore
 
+# Initialize Firebase
+cred = credentials.Certificate("homework-manager-97276-firebase-adminsdk-jdjg3-f31dd6cfc6.json")
+
+try:
+    firebase_admin.initialize_app(cred)
+except Exception as e:
+    pass
+
+# Initialize Firestore client
+db = firestore.client()
+
+#Title of app
 st.title("Homework")
 
-# Initialize the lists and expanded state in session_state if they don't exist
+
+
+
+
+# Read the array1 document
 if 'todo' not in st.session_state:
-    st.session_state.todo = []
+    doc1 = db.collection('data').document('todo').get()
+    if doc1.exists:
+        print(f"Array 1: {doc1.to_dict()['values']}")
+        st.session_state.todo = doc1.to_dict()['values']
 
+# Read the array2 document
 if 'doing' not in st.session_state:
-    st.session_state.doing = []
+    doc2 = db.collection('data').document('doing').get()
+    if doc2.exists:
+        print(f"Array 2: {doc2.to_dict()['values']}")
+        st.session_state.doing = doc2.to_dict()['values']
 
+# Read the array3 document
 if 'done' not in st.session_state:
-    st.session_state.done = []
+    doc3 = db.collection('data').document('done').get()
+    if doc3.exists:
+        print(f"Array 3: {doc3.to_dict()['values']}")
+        st.session_state.done = doc3.to_dict()['values']
 
 if 'expanded_item' not in st.session_state:
     st.session_state.expanded_item = None  # Track the expanded state for item options
@@ -78,6 +107,14 @@ with todo_col:
         st.session_state.todo.append(input)
         st.rerun()
 
+    # Example for the 'todo' collection
+    try:
+        db.collection('data').document('todo').set({'values': st.session_state.todo})
+        print("Todo list updated successfully.")
+    except Exception as e:
+        print(f"Error updating 'todo' document: {e}")
+
+
 # Doing Column (similar logic for "Doing" column)
 with doing_col:
     st.write("Doing")
@@ -113,7 +150,7 @@ with doing_col:
                     if new_name:
                         st.session_state.doing[i] = new_name
                         st.rerun()
-
+    db.collection('data').document('doing').set({'values': st.session_state.doing})
 # Done Column (similar logic for "Done" column)
 with done_col:
     st.write("Done")
@@ -143,3 +180,4 @@ with done_col:
                     if new_name:
                         st.session_state.done[i] = new_name
                         st.rerun()
+    db.collection('data').document('done').set({'values': st.session_state.done})
