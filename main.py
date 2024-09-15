@@ -74,7 +74,7 @@ todo_col, doing_col, done_col = st.columns([9,9,3])
 
 # Todo Column
 with todo_col:
-    st.write("Todo")
+    st.subheader("Todo")
     
     # Display the todo list
     for i in range(len(st.session_state.todo)):
@@ -132,7 +132,7 @@ with todo_col:
 
 # Doing Column (similar logic for "Doing" column)
 with doing_col:
-    st.write("Doing")
+    st.subheader("Doing")
     for i in range(len(st.session_state.doing)):
         col1, col2 = st.columns([3, 1])
         item = st.session_state.doing[i]
@@ -168,7 +168,7 @@ with doing_col:
     db.collection('data').document('doing').set({'values': st.session_state.doing})
 # Done Column (similar logic for "Done" column)
 with done_col:
-    st.write("Done")
+    st.subheader("Done")
     for i in range(len(st.session_state.done)):
         col1, col2 = st.columns([3, 1])
         item = st.session_state.done[i]
