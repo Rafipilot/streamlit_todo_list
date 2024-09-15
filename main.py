@@ -2,8 +2,6 @@ import streamlit as st
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
-import config
-
 import os
 
 # Load Firebase config from environment variable
