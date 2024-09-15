@@ -1,10 +1,18 @@
 import streamlit as st
+import json
 import firebase_admin
 from firebase_admin import credentials, firestore
+from config import FIREBASE_CONFIG
 
 # Initialize Firebase
-cred = credentials.Certificate("homework-manager-97276-firebase-adminsdk-jdjg3-f31dd6cfc6.json")
+# Convert dictionary to JSON and save it to a temporary file
+with open('temp_credentials.json', 'w') as json_file:
+    json.dump(FIREBASE_CONFIG, json_file)
 
+# Initialize Firebase
+cred = credentials.Certificate('temp_credentials.json')
+
+#making sure we dont initalize it more than once and error out
 try:
     firebase_admin.initialize_app(cred)
 except Exception as e:
@@ -20,21 +28,21 @@ st.title("Homework")
 
 
 
-# Read the array1 document
+# Read the todo array from firebase
 if 'todo' not in st.session_state:
     doc1 = db.collection('data').document('todo').get()
     if doc1.exists:
         print(f"Array 1: {doc1.to_dict()['values']}")
         st.session_state.todo = doc1.to_dict()['values']
 
-# Read the array2 document
+# Read the doing array from firebase
 if 'doing' not in st.session_state:
     doc2 = db.collection('data').document('doing').get()
     if doc2.exists:
         print(f"Array 2: {doc2.to_dict()['values']}")
         st.session_state.doing = doc2.to_dict()['values']
 
-# Read the array3 document
+# Read the done array from firebase
 if 'done' not in st.session_state:
     doc3 = db.collection('data').document('done').get()
     if doc3.exists:
