@@ -2,15 +2,21 @@ import streamlit as st
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
-from config import FIREBASE_CONFIG
+import config
+
+import os
+
+# Load Firebase config from environment variable
+firebase_config = os.getenv('FIREBASE_CONFIG')
+if firebase_config is None:
+    raise ValueError("FIREBASE_CONFIG environment variable not set")
+
+# Parse the JSON string
+firebase_config_dict = json.loads(firebase_config)
 
 # Initialize Firebase
-# Convert dictionary to JSON and save it to a temporary file
-with open('temp_credentials.json', 'w') as json_file:
-    json.dump(FIREBASE_CONFIG, json_file)
-
-# Initialize Firebase
-cred = credentials.Certificate('temp_credentials.json')
+cred = credentials.Certificate(firebase_config_dict)
+firebase_admin.initialize_app(cred)
 
 #making sure we dont initalize it more than once and error out
 try:
